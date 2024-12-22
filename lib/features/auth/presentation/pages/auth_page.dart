@@ -4,7 +4,6 @@ Auth Page - This page determines whether to show the login or register page
 
 */
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socialmediaapp/features/auth/presentation/pages/login_page.dart';
 import 'package:socialmediaapp/features/auth/presentation/pages/register_page.dart';
