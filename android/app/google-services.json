@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "458170948247",
+    "project_id": "socialapp-92590",
+    "storage_bucket": "socialapp-92590.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458170948247:android:c82671e466d70154a5e7d2",
+        "android_client_info": {
+          "package_name": "app.twotdiddy.social"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-ewcDs6vpxI-5kDtzJaKbEEiMeSPL9GA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
