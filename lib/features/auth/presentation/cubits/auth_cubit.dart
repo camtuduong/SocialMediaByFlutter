@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmediaapp/features/auth/domain/entities/app_user.dart';
 import 'package:socialmediaapp/features/auth/domain/repos/auth_repo.dart';
-import 'package:socialmediaapp/features/auth/presentation/cubits/auth.states.dart';
+import 'package:socialmediaapp/features/auth/presentation/cubits/auth_states.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepo authRepo;
