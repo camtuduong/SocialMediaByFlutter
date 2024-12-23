@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmediaapp/features/auth/domain/entities/app_user.dart';
 import 'package:socialmediaapp/features/auth/presentation/cubits/auth_cubit.dart';
+import 'package:socialmediaapp/features/profile/presentation/components/bio.box.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_states.dart';
+import 'package:socialmediaapp/features/profile/presentation/pages/edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -37,11 +39,96 @@ class _ProfilePageState extends State<ProfilePage> {
           final user = state.profileUser;
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text(user.name),
-              foregroundColor: Theme.of(context).colorScheme.primary,
-            ),
-          );
+              appBar: AppBar(
+                title: Text(user.name),
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                actions: [
+                  //edit profile button
+                  IconButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfilePage(
+                          user: user,
+                        ),
+                      ),
+                    ),
+                    icon: const Icon(Icons.settings),
+                  )
+                ],
+              ),
+
+              //body
+              body: Column(
+                children: [
+                  //email
+                  Text(
+                    user.email,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
+
+                  const SizedBox(
+                    height: 15,
+                  ),
+
+                  //profile pic
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    height: 120,
+                    width: 120,
+                    padding: const EdgeInsets.all(25),
+                    child: Icon(
+                      Icons.person,
+                      size: 72,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 25,
+                  ),
+
+                  //bio box
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Bio",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 10,
+                  ),
+
+                  BioBox(text: user.bio),
+
+                  //posts
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25.0, top: 25),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Posts",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ));
         }
 
         //loading..
