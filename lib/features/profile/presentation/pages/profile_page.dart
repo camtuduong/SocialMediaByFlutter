@@ -77,15 +77,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(12),
+                      image: user.profileImageUrl.isNotEmpty
+                          ? DecorationImage(
+                              image: NetworkImage(user
+                                  .profileImageUrl), // Sử dụng URL ảnh từ Firestore
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
                     height: 120,
                     width: 120,
-                    padding: const EdgeInsets.all(25),
-                    child: Icon(
-                      Icons.person,
-                      size: 72,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    child: user.profileImageUrl.isEmpty
+                        ? const Icon(Icons.person, size: 72, color: Colors.grey)
+                        : null, // Hiển thị biểu tượng nếu không có ảnh
                   ),
 
                   const SizedBox(

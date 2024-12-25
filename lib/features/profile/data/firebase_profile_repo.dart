@@ -8,7 +8,7 @@ class FirebaseProfileRepo implements ProfileRepo {
   @override
   Future<ProfileUser?> fetchUserProfile(String uid) async {
     try {
-      //get user document from firebase
+      // Lấy dữ liệu từ Firestore
       final userDoc =
           await firebaseFirestore.collection("users").doc(uid).get();
 
@@ -21,13 +21,13 @@ class FirebaseProfileRepo implements ProfileRepo {
             email: userData["email"],
             name: userData["name"],
             bio: userData["bio"] ?? '',
-            profileImageUrl: userData["profileImageUrl"].toString(),
+            profileImageUrl: userData["profileImageUrl"] ?? '', // Lấy URL ảnh
           );
         }
       }
       return null;
     } catch (e) {
-      return null;
+      throw Exception("Error fetching user: $e");
     }
   }
 
