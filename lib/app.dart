@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmediaapp/features/auth/data/firebase_auth_repo.dart';
-import 'package:socialmediaapp/features/auth/home/presentation/pages/home_page.dart';
+import 'package:socialmediaapp/features/home/presentation/pages/home_page.dart';
 import 'package:socialmediaapp/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:socialmediaapp/features/auth/presentation/cubits/auth_states.dart';
 import 'package:socialmediaapp/features/auth/presentation/pages/auth_page.dart';
+import 'package:socialmediaapp/features/post/data/firebase_post_repo.dart';
+import 'package:socialmediaapp/features/post/presentation/cubits/post_cubit.dart';
 import 'package:socialmediaapp/features/profile/data/firebase_profile_repo.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:socialmediaapp/themes/light_mode.dart';
@@ -29,10 +31,13 @@ Check Auth State
 
 class MyApp extends StatelessWidget {
   //auth repo
-  final authRepo = FirebaseAuthRepo();
+  final firebaseAuthRepo = FirebaseAuthRepo();
 
   //profile repo
-  final profileRepo = FirebaseProfileRepo();
+  final firebaseProfileRepo = FirebaseProfileRepo();
+
+  //post repo
+  final firebasePostRepo = FirebasePostRepo();
 
   MyApp({super.key});
 
@@ -44,13 +49,17 @@ class MyApp extends StatelessWidget {
       providers: [
         //auth cubits
         BlocProvider<AuthCubit>(
-          create: (context) => AuthCubit(authRepo: authRepo)..checkAuth(),
+          create: (context) =>
+              AuthCubit(authRepo: firebaseAuthRepo)..checkAuth(),
         ),
 
         //profile cubits
         BlocProvider<ProfileCubit>(
-          create: (context) => ProfileCubit(profileRepo: profileRepo),
+          create: (context) => ProfileCubit(profileRepo: firebaseProfileRepo),
         ),
+
+        BlocProvider<PostCubit>(
+            create: (context) => PostCubit(postRepo: firebasePostRepo)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
