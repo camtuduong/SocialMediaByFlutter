@@ -72,24 +72,37 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 15,
                   ),
 
-                  //profile pic
+                  // Profile pic
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(12),
+                      shape: BoxShape
+                          .circle, // Đổi từ BoxShape.rectangle sang BoxShape.circle
                       image: user.profileImageUrl.isNotEmpty
                           ? DecorationImage(
-                              image: NetworkImage(user
-                                  .profileImageUrl), // Sử dụng URL ảnh từ Firestore
+                              image: NetworkImage(
+                                  user.profileImageUrl), // URL ảnh từ Firestore
                               fit: BoxFit.cover,
                             )
                           : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1), // Hiệu ứng bóng
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    height: 120,
-                    width: 120,
+                    height: 120, // Đường kính hình tròn
+                    width: 120, // Đường kính hình tròn
                     child: user.profileImageUrl.isEmpty
-                        ? const Icon(Icons.person, size: 72, color: Colors.grey)
-                        : null, // Hiển thị biểu tượng nếu không có ảnh
+                        ? const Icon(
+                            Icons.person,
+                            size:
+                                60, // Biểu tượng trong trường hợp không có ảnh
+                            color: Colors.grey,
+                          )
+                        : null,
                   ),
 
                   const SizedBox(

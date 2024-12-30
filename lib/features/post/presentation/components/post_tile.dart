@@ -94,7 +94,11 @@ class _PostTileState extends State<PostTile> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Delete Post?"),
+        title: Text(
+          "Delete Post?",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
         actions: [
           //cancel btn
           TextButton(
@@ -239,7 +243,11 @@ class _PostTileState extends State<PostTile> {
 
                 const Spacer(),
                 //timestamp
-                Text(widget.post.timestamp.toString()),
+                Text(
+                  widget.post.timestamp.toString(),
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
               ],
             ),
           ),
