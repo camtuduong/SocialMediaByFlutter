@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialmediaapp/features/profile/domain/entities/profile_user.dart';
 import 'package:socialmediaapp/features/profile/domain/repos/profile_repo.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_states.dart';
 
@@ -7,7 +8,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
 
   ProfileCubit({required this.profileRepo}) : super(ProfileInitial());
 
-  //fetch user profile using repos
+  //fetch user profile using repos -> useful for loading profile page
   Future<void> fetchUserProfile(String uid) async {
     try {
       emit(ProfileLoading());
@@ -21,6 +22,12 @@ class ProfileCubit extends Cubit<ProfileStates> {
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
+  }
+
+  //return user profile given uid -> useful for loading many profile for posts
+  Future<ProfileUser?> getUserProfile(String uid) async {
+    final user = await profileRepo.fetchUserProfile(uid);
+    return user;
   }
 
   //update bio and/or profile picture

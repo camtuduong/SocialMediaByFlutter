@@ -80,7 +80,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
       return;
     }
 
-    // Show a loading indicator
+    // Hiển thị trạng thái loading
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -90,7 +90,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
     );
 
     try {
-      // Upload image to Cloudinary
+      // Upload ảnh lên Cloudinary
       String? imageUrl;
       if (_filePickerResult != null) {
         imageUrl = await uploadToCloudinary(_filePickerResult!);
@@ -100,33 +100,40 @@ class _UploadPostPageState extends State<UploadPostPage> {
         throw Exception("Failed to upload image to Cloudinary");
       }
 
-      // Create the post
+      // Tạo post mới
       final newPost = Post(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         userId: currentUser!.uid,
         userName: currentUser!.name,
         text: textController.text,
-        imageUrl: imageUrl, // URL of the uploaded image
+        imageUrl: imageUrl,
         timestamp: DateTime.now(),
       );
 
-      // Save post to Firestore using PostCubit
+      // Lưu post vào Firestore
       final postCubit = context.read<PostCubit>();
       await postCubit.createPost(newPost);
 
-      // Close the loading dialog
-      Navigator.pop(context);
+      // Đóng dialog loading
+      if (mounted) Navigator.pop(context);
 
-      // Show success message and return to the previous screen
+      // Hiển thị thông báo thành công
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Post uploaded successfully")),
       );
-      Navigator.pop(context);
-    } catch (e) {
-      // Close the loading dialog
-      Navigator.pop(context);
 
-      // Show error message
+      // Giữ người dùng ở màn hình hiện tại
+      setState(() {
+        _filePickerResult = null;
+        imagePickedFile = null;
+        webImage = null;
+        textController.clear();
+      });
+    } catch (e) {
+      // Đóng dialog loading khi có lỗi
+      if (mounted) Navigator.pop(context);
+
+      // Hiển thị thông báo lỗi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to upload post: $e")),
       );

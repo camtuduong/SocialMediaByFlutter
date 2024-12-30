@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:socialmediaapp/features/auth/domain/entities/app_user.dart';
 import 'package:socialmediaapp/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:socialmediaapp/features/post/domain/entities/post.dart';
@@ -47,7 +46,15 @@ class _PostTileState extends State<PostTile> {
     isOwnPost = (widget.post.userId == currentUser!.uid);
   }
 
-  Future<void> fetchPostUser() async {}
+  Future<void> fetchPostUser() async {
+    final fetchedUser = await profileCubit.getUserProfile(widget.post.userId);
+    if (fetchedUser != null) {
+      setState(() {
+        postUser = fetchedUser;
+      });
+    }
+  }
+
   //show options for deletion
   void showOptions() {
     showDialog(
@@ -74,34 +81,77 @@ class _PostTileState extends State<PostTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //name
-            Text(widget.post.userName),
+    return Container(
+      color: Theme.of(context).colorScheme.secondary,
+      child: Column(
+        children: [
+          //top section
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //profile pic
+                postUser?.profileImageUrl != null
+                    ? CachedNetworkImage(
+                        imageUrl: postUser!.profileImageUrl,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.person),
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              )),
+                        ),
+                      )
+                    : const Icon(Icons.person),
+                const SizedBox(
+                  width: 10,
+                ),
 
-            //delete btn
-            IconButton(
-              onPressed: showOptions,
-              icon: const Icon(Icons.delete),
+                //name
+                Text(
+                  widget.post.userName,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const Spacer(),
+
+                //delete btn
+                if (isOwnPost)
+                  GestureDetector(
+                    onTap: showOptions,
+                    child: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
-
-        //image
-        CachedNetworkImage(
-          imageUrl: widget.post.imageUrl,
-          height: 430,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => const SizedBox(
-            height: 430,
           ),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-        ),
-      ],
+
+          //image
+          CachedNetworkImage(
+            imageUrl: widget.post.imageUrl,
+            height: 430,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const SizedBox(
+              height: 430,
+            ),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+
+          //btn -> like , comment, timestamp
+        ],
+      ),
     );
   }
 }
