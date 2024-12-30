@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmediaapp/features/home/presentation/components/my_drawer.dart';
-import 'package:socialmediaapp/features/home/presentation/components/post_tile.dart';
+import 'package:socialmediaapp/features/post/presentation/components/post_tile.dart';
 import 'package:socialmediaapp/features/post/presentation/cubits/post_cubit.dart';
 import 'package:socialmediaapp/features/post/presentation/cubits/post_states.dart';
 import 'package:socialmediaapp/features/post/presentation/pages/upload_post_page.dart';

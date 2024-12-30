@@ -108,6 +108,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         text: textController.text,
         imageUrl: imageUrl,
         timestamp: DateTime.now(),
+        likes: [],
       );
 
       // Lưu post vào Firestore
@@ -253,7 +254,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
                 ),
                 child: const Text(
                   "Upload Post",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: Colors.white70),
                 ),
               ),
             ),
