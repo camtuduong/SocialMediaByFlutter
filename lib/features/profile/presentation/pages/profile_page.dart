@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialmediaapp/features/auth/domain/entities/app_user.dart';
@@ -135,35 +136,44 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
 
                   // Profile pic
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      shape: BoxShape.circle, // Hình dạng hình tròn
-                      image: user.profileImageUrl.isNotEmpty
-                          ? DecorationImage(
-                              image: NetworkImage(user.profileImageUrl),
-                              fit: BoxFit
-                                  .cover, // Đảm bảo ảnh bao phủ toàn bộ hình tròn mà không bị méo
-                            )
-                          : null,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1), // Hiệu ứng bóng
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                  Center(
+                    child: Container(
+                      height: 120, // Đường kính hình tròn
+                      width: 120, // Đường kính hình tròn
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        shape: BoxShape.circle, // Hình dạng hình tròn
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                Colors.black.withOpacity(0.1), // Hiệu ứng bóng
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        // Đảm bảo ảnh nằm trong hình tròn
+                        child: user.profileImageUrl.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: user.profileImageUrl,
+                                fit: BoxFit.cover, // Đảm bảo ảnh không bị méo
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(), // Hiển thị khi đang tải
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.error, // Hiển thị khi lỗi
+                                  color: Colors.red,
+                                ),
+                              )
+                            : const Icon(
+                                Icons
+                                    .person, // Biểu tượng mặc định nếu không có ảnh
+                                size: 60,
+                                color: Colors.grey,
+                              ),
+                      ),
                     ),
-                    height: 120, // Đường kính hình tròn
-                    width: 120, // Đường kính hình tròn
-                    child: user.profileImageUrl.isEmpty
-                        ? const Icon(
-                            Icons.person,
-                            size:
-                                60, // Biểu tượng trong trường hợp không có ảnh
-                            color: Colors.grey,
-                          )
-                        : null,
                   ),
 
                   const SizedBox(height: 25),
@@ -240,21 +250,27 @@ class _ProfilePageState extends State<ProfilePage> {
                     builder: (context, state) {
                       //posts loaded
                       if (state is PostsLoaded) {
-                        //loc nhung bai post dua tren user id
+                        //lọc bài post dựa trên user id
                         final userPosts = state.posts
                             .where((post) => post.userId == widget.uid)
                             .toList();
 
-                        postCount = userPosts.length;
+                        // cập nhật postCount và trigger rebuild
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            postCount = userPosts.length;
+                          });
+                        });
+
                         return ListView.builder(
                           itemCount: postCount,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            //lay tung bai post
+                            // lấy từng bài post
                             final post = userPosts[index];
 
-                            //return as post tile UI
+                            // return PostTile
                             return PostTile(
                               post: post,
                               onDeletePressed: () =>

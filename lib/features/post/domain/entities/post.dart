@@ -45,7 +45,7 @@ class Post {
       'imageUrl': imageUrl,
       'timestamp': Timestamp.fromDate(timestamp),
       'likes': likes,
-      'comments': comments.map((comment) => comment.toJson()).toString(),
+      'comments': comments.map((comment) => comment.toJson()).toList(),
     };
   }
 

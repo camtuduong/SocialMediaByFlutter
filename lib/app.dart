@@ -9,6 +9,8 @@ import 'package:socialmediaapp/features/post/data/firebase_post_repo.dart';
 import 'package:socialmediaapp/features/post/presentation/cubits/post_cubit.dart';
 import 'package:socialmediaapp/features/profile/data/firebase_profile_repo.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_cubit.dart';
+import 'package:socialmediaapp/features/search/data/firebase_search_repo.dart';
+import 'package:socialmediaapp/features/search/presentation/cubits/search_cubit.dart';
 import 'package:socialmediaapp/themes/theme_cubit.dart';
 
 /*
@@ -39,6 +41,9 @@ class MyApp extends StatelessWidget {
   //post repo
   final firebasePostRepo = FirebasePostRepo();
 
+  //search repo
+  final firebaseSearchRepo = FirebaseSearchRepo();
+
   MyApp({super.key});
 
   // This widget is the root of your application.
@@ -63,6 +68,8 @@ class MyApp extends StatelessWidget {
             create: (context) => PostCubit(postRepo: firebasePostRepo)),
 
         //search cubit
+        BlocProvider<SearchCubit>(
+            create: (context) => SearchCubit(searchRepo: firebaseSearchRepo)),
 
         //theme cubit
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
