@@ -15,6 +15,7 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
       obscureText: obscureText,
       decoration: InputDecoration(
         //border when unselected

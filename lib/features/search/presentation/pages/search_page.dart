@@ -40,11 +40,13 @@ class _SearchPageState extends State<SearchPage> {
         //search textfield
         title: TextField(
           controller: searchController,
+          style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
           decoration: InputDecoration(
               hintText: "Search users...",
               hintStyle:
                   TextStyle(color: Theme.of(context).colorScheme.primary)),
         ),
+        foregroundColor: Theme.of(context).colorScheme.primary,
       ),
 
       //ket qua tim kiem
