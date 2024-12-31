@@ -109,6 +109,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
         imageUrl: imageUrl,
         timestamp: DateTime.now(),
         likes: [],
+        comments: [],
       );
 
       // Lưu post vào Firestore
