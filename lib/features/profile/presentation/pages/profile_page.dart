@@ -6,9 +6,12 @@ import 'package:socialmediaapp/features/post/presentation/components/post_tile.d
 import 'package:socialmediaapp/features/post/presentation/cubits/post_cubit.dart';
 import 'package:socialmediaapp/features/post/presentation/cubits/post_states.dart';
 import 'package:socialmediaapp/features/profile/presentation/components/bio.box.dart';
+import 'package:socialmediaapp/features/profile/presentation/components/follow_button.dart';
+import 'package:socialmediaapp/features/profile/presentation/components/profile_stats.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:socialmediaapp/features/profile/presentation/cubits/profile_states.dart';
 import 'package:socialmediaapp/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:socialmediaapp/features/profile/presentation/pages/follower_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -21,6 +24,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   //cubits
   late final authCubit = context.read<AuthCubit>();
+  late final profileCubit = context.read<ProfileCubit>();
 
   //current user
   late AppUser? currentUser = authCubit.currentUser;
@@ -31,13 +35,61 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Gọi fetchUserProfile khi màn hình được khởi tạo
-    context.read<ProfileCubit>().fetchUserProfile(widget.uid);
+
+    //load user profile data
+    profileCubit.fetchUserProfile(widget.uid);
+  }
+
+  /*
+
+    FOLLOW / UNFOLLOW
+
+  */
+  void followButtonPressed() {
+    final profileState = profileCubit.state;
+    if (profileState is! ProfileLoaded) {
+      return; //return is profile is not loaded
+    }
+
+    final profileUser = profileState.profileUser;
+    final isFollowing = profileUser.followers.contains(currentUser!.uid);
+
+    //optimistically update UI
+    setState(() {
+      //unfollow
+      if (isFollowing) {
+        profileUser.followers.remove(currentUser!.uid);
+      }
+
+      //follow
+      else {
+        profileUser.followers.add(currentUser!.uid);
+      }
+    });
+
+    //thực hiện chuyển đổi thực tế theo cubit
+    profileCubit.toggleFollow(currentUser!.uid, widget.uid).catchError((error) {
+      //revert update if there is an error
+      setState(() {
+        //unfollow
+        if (isFollowing) {
+          profileUser.followers.add(currentUser!.uid);
+        }
+
+        //follow
+        else {
+          profileUser.followers.remove(currentUser!.uid);
+        }
+      });
+    });
   }
 
 //Build ui
   @override
   Widget build(BuildContext context) {
+    //is own post
+    bool isOwnPost = (widget.uid == currentUser!.uid);
+
     return BlocBuilder<ProfileCubit, ProfileStates>(
       builder: (context, state) {
         //loaded
@@ -51,17 +103,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 foregroundColor: Theme.of(context).colorScheme.primary,
                 actions: [
                   //edit profile button
-                  IconButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfilePage(
-                          user: user,
+                  if (isOwnPost)
+                    IconButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfilePage(
+                            user: user,
+                          ),
                         ),
                       ),
-                    ),
-                    icon: const Icon(Icons.settings),
-                  )
+                      icon: const Icon(Icons.settings),
+                    )
                 ],
               ),
 
@@ -85,13 +138,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
-                      shape: BoxShape
-                          .circle, // Đổi từ BoxShape.rectangle sang BoxShape.circle
+                      shape: BoxShape.circle, // Hình dạng hình tròn
                       image: user.profileImageUrl.isNotEmpty
                           ? DecorationImage(
-                              image: NetworkImage(
-                                  user.profileImageUrl), // URL ảnh từ Firestore
-                              fit: BoxFit.cover,
+                              image: NetworkImage(user.profileImageUrl),
+                              fit: BoxFit
+                                  .cover, // Đảm bảo ảnh bao phủ toàn bộ hình tròn mà không bị méo
                             )
                           : null,
                       boxShadow: [
@@ -114,9 +166,34 @@ class _ProfilePageState extends State<ProfilePage> {
                         : null,
                   ),
 
-                  const SizedBox(
-                    height: 25,
+                  const SizedBox(height: 25),
+
+                  //profile stats
+                  ProfileStats(
+                    postCount: postCount,
+                    followersCount: user.followers.length,
+                    followingCount: user.following.length,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FollowerPage(
+                          followers: user.followers,
+                          following: user.following,
+                        ),
+                      ),
+                    ),
                   ),
+
+                  const SizedBox(height: 25),
+
+                  //follow btn
+                  if (!isOwnPost)
+                    FollowButton(
+                      onPressed: followButtonPressed,
+                      isFollowing: user.followers.contains(currentUser!.uid),
+                    ),
+
+                  const SizedBox(height: 25),
 
                   //bio box
                   Padding(

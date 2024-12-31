@@ -7,4 +7,5 @@ import 'package:socialmediaapp/features/profile/domain/entities/profile_user.dar
 abstract class ProfileRepo {
   Future<ProfileUser?> fetchUserProfile(String uid);
   Future<void> updateProfile(ProfileUser updateProfile);
+  Future<void> toggleFollow(String currentUid, String targetUid);
 }

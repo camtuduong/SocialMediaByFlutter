@@ -337,15 +337,19 @@ class _PostTileState extends State<PostTile> {
                 //userName
                 Text(
                   widget.post.userName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.inversePrimary),
                 ),
 
                 const SizedBox(width: 10),
 
                 //text
-                Text(widget.post.text),
+                Text(
+                  widget.post.text,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                ),
               ],
             ),
           ),
