@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialmediaapp/app.dart';
 import 'package:socialmediaapp/features/auth/domain/entities/app_user.dart';
 import 'package:socialmediaapp/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:socialmediaapp/features/post/domain/entities/comment.dart';
@@ -31,21 +30,25 @@ class _CommentTileState extends State<CommentTile> {
     isOwnPost = (widget.comment.userId == currentUser!.uid);
   }
 
-  //show options for deletion
+  //show options for deletion or editing
   void showOptions() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          "Delete Comment?",
+          "Comment Options",
           textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).colorScheme.primary),
         ),
         actions: [
-          //cancel btn
+          //edit btn
           TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel")),
+            onPressed: () {
+              Navigator.of(context).pop();
+              showEditDialog();
+            },
+            child: const Text("Edit"),
+          ),
 
           //delete btn
           TextButton(
@@ -56,6 +59,53 @@ class _CommentTileState extends State<CommentTile> {
                 Navigator.of(context).pop();
               },
               child: const Text("Delete")),
+        ],
+      ),
+    );
+  }
+
+  // show dialog to edit the comment
+  void showEditDialog() {
+    TextEditingController textController =
+        TextEditingController(text: widget.comment.text);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "Edit Comment",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
+        content: TextField(
+          controller: textController,
+          maxLines: null,
+          decoration: InputDecoration(
+            hintText: "Edit your comment",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          //cancel btn
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel")),
+
+          //save btn
+          TextButton(
+            onPressed: () {
+              String updatedText = textController.text.trim();
+              if (updatedText.isNotEmpty) {
+                context.read<PostCubit>().updateComment(
+                      widget.comment.postId,
+                      widget.comment.id,
+                      updatedText,
+                    );
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text("Save"),
+          ),
         ],
       ),
     );
@@ -87,7 +137,7 @@ class _CommentTileState extends State<CommentTile> {
 
           const Spacer(),
 
-          //delete btn
+          //more options button
           if (isOwnPost)
             GestureDetector(
               onTap: showOptions,
@@ -95,7 +145,7 @@ class _CommentTileState extends State<CommentTile> {
                 Icons.more_horiz,
                 color: Theme.of(context).colorScheme.primary,
               ),
-            )
+            ),
         ],
       ),
     );

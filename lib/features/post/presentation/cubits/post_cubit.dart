@@ -73,6 +73,21 @@ class PostCubit extends Cubit<PostState> {
     }
   }
 
+  // Cập nhật nội dung của một bình luận trong bài đăng
+  Future<void> updateComment(
+      String postId, String commentId, String updatedText) async {
+    try {
+      emit(PostLoading());
+
+      // Lấy bài đăng từ Firestore
+      await postRepo.updateComment(postId, commentId, updatedText);
+
+      await fetchAllPost(); // Tải lại danh sách bài đăng
+    } catch (e) {
+      emit(PostError("Failed to update comment: $e"));
+    }
+  }
+
   //xoa comment trong post
   Future<void> deleteComment(String postId, String commentId) async {
     try {

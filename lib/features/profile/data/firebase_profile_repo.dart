@@ -40,7 +40,7 @@ class FirebaseProfileRepo implements ProfileRepo {
   @override
   Future<void> updateProfile(ProfileUser updateProfile) async {
     try {
-      //convert updated profile to json to store in firebaseFirestore
+      //chuyển đổi hồ sơ đã cập nhật thành json để lưu trữ trong firebaseFirestore
       await firebaseFirestore
           .collection("users")
           .doc(updateProfile.uid)
@@ -69,7 +69,7 @@ class FirebaseProfileRepo implements ProfileRepo {
           final List<String> currentFollowing =
               List<String>.from(currentUserData['following'] ?? []);
 
-          //check if the current user is already following the target user
+          //kiểm tra xem người dùng hiện tại đã theo dõi người dùng mục tiêu chưa
           if (currentFollowing.contains(targetUid)) {
             //unfollow
             await firebaseFirestore.collection('users').doc(currentUid).update({

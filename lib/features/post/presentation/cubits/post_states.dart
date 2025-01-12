@@ -28,3 +28,10 @@ class PostUpdated extends PostState {
   final Post updatedPost;
   PostUpdated(this.updatedPost);
 }
+
+class CommentUpdated extends PostState {
+  final String commentId;
+  final String updatedText;
+
+  CommentUpdated(this.commentId, this.updatedText);
+}

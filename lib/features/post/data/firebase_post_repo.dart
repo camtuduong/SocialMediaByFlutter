@@ -118,6 +118,40 @@ class FirebasePostRepo implements PostRepo {
     }
   }
 
+  Future<void> updateComment(
+      String postId, String commentId, String updatedText) async {
+    try {
+      // Lấy tài liệu bài đăng
+      final postDoc = await postsCollection.doc(postId).get();
+
+      if (postDoc.exists) {
+        // Chuyển đổi dữ liệu bài đăng từ JSON
+        final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+
+        // Tìm và cập nhật nội dung của bình luận
+        final commentIndex =
+            post.comments.indexWhere((comment) => comment.id == commentId);
+        if (commentIndex != -1) {
+          // Sử dụng copyWith để cập nhật nội dung bình luận
+          post.comments[commentIndex] =
+              post.comments[commentIndex].copyWith(text: updatedText);
+
+          // Cập nhật danh sách bình luận trong Firestore
+          await postsCollection.doc(postId).update({
+            'comments':
+                post.comments.map((comment) => comment.toJson()).toList(),
+          });
+        } else {
+          throw Exception("Comment not found");
+        }
+      } else {
+        throw Exception("Post not found");
+      }
+    } catch (e) {
+      throw Exception("Error updating comment: $e");
+    }
+  }
+
   @override
   Future<void> deleteComment(String postId, String commentId) async {
     try {

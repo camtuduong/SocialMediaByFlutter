@@ -17,7 +17,7 @@ class Comment {
     required this.timestamp,
   });
 
-  // Chuyen tu Comment sang json
+  // Chuyển từ Comment sang JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -29,7 +29,7 @@ class Comment {
     };
   }
 
-  //chuyen tu json sang comment
+  // Chuyển từ JSON sang Comment
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['id'],
@@ -38,6 +38,25 @@ class Comment {
       userName: json['userName'],
       text: json['text'],
       timestamp: (json['timestamp'] as Timestamp).toDate(),
+    );
+  }
+
+  // Phương thức copyWith để tạo bản sao với các thay đổi
+  Comment copyWith({
+    String? id,
+    String? postId,
+    String? userId,
+    String? userName,
+    String? text,
+    DateTime? timestamp,
+  }) {
+    return Comment(
+      id: id ?? this.id,
+      postId: postId ?? this.postId,
+      userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      text: text ?? this.text,
+      timestamp: timestamp ?? this.timestamp,
     );
   }
 }
