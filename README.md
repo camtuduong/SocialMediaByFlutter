@@ -4,7 +4,7 @@ A new Flutter project.
 
 ## Getting Started
 
-use code "flutter pub get" to download all library
+use code **"flutter pub get"** to download all library
 
 This project is a starting point for a Flutter application.
 
